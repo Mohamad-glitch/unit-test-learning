@@ -69,6 +69,11 @@ public class StudentAndGradeServiceTest {
     public void checkIfItIsNull() {
         assertNotNull(studentDAO.findById(1));
 
+        // or in other way
+
+        assertTrue(studentService.checkIfStudentIsNull(0));
+        assertFalse(studentService.checkIfStudentIsNull(1));
+
     }
 
 
