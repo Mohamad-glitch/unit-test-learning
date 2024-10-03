@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 // this project uses TDD(Test Driven Development)
@@ -26,7 +28,8 @@ public class StudentAndGradeServiceTest {
     private StudentDAO studentDAO;
 
     @Autowired
-    private JdbcTemplate jdbc;
+    private JdbcTemplate jdbc; // the jdbc is a helper for spring like u don't need to connect to database and it is faster
+    // because the temporary data stored in RAM
 
 
     @BeforeEach
@@ -38,7 +41,7 @@ public class StudentAndGradeServiceTest {
 
     @AfterEach
     public void tearDown() {
-        jdbc.execute("DELETE FROM student");
+        jdbc.execute("DELETE FROM student");// this to free the RAM from data
     }
 
 
@@ -73,6 +76,22 @@ public class StudentAndGradeServiceTest {
 
         assertTrue(studentService.checkIfStudentIsNull(0));
         assertFalse(studentService.checkIfStudentIsNull(1));
+
+    }
+
+
+    @DisplayName("delete student from database")
+    @Test
+    public void deleteStudentFromDatabase(){
+        Optional<CollegeStudent> student = studentDAO.findById(1);
+
+        assertTrue(student.isPresent(), "return true");
+
+        studentService.deleteStudent(1);
+
+        Optional<CollegeStudent> student2 = studentDAO.findById(1);
+
+        assertFalse(student2.isPresent(), "return false");
 
     }
 
