@@ -19,8 +19,15 @@ public class GradebookController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getStudents(Model m) {
         Iterable<CollegeStudent> collegeStudents = studentService.getGradeBook();// get the students
-        m.addAttribute("collegeStudents", collegeStudents);// add the students to model 
+        m.addAttribute("collegeStudents", collegeStudents);// add the students to model
 
+        return "index";
+    }
+
+    @PostMapping("/")
+    public String addStudent(@ModelAttribute("student") CollegeStudent student, Model m) {
+        // this will save model student to database
+        studentService.createStudent(student.getFirstname(),student.getLastname(),student.getEmailAddress());
         return "index";
     }
 
