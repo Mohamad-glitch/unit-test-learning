@@ -12,5 +12,4 @@ public interface StudentDAO extends JpaRepository<CollegeStudent, Integer> {
 
 
 
-
 }

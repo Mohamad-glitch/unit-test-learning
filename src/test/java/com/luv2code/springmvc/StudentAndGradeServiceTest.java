@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,9 +50,9 @@ public class StudentAndGradeServiceTest {
 
     @Test
     public void createStudentService(){
-        studentService.createStudent("Mohamad", "Shlool", "whatever@gamil.com");
+        studentService.createStudent("Mohamad", "Shlool", "whatever3@gamil.com");
 
-        CollegeStudent student = studentDAO.findByEmailAddress("whatever@gamil.com");
+        CollegeStudent student = studentDAO.findByEmailAddress("whatever@gamil.com");// to preform this method the data must not be duplicate
 
         assertEquals("whatever@gamil.com",
                 student.getEmailAddress(), "find by email address");//"This Should be EQUALS"
@@ -95,5 +98,22 @@ public class StudentAndGradeServiceTest {
 
     }
 
+    // the beforeEach will execute first
+    // but then the sql will be executed
+    @Sql("/insertData.sql")
+    @Test
+    public void getGradBookService(){
+        Iterable<CollegeStudent> students = studentService.getGradeBook();
+
+        List<CollegeStudent> collegeStudentList = new ArrayList<>();
+
+        for(CollegeStudent student : students){
+            collegeStudentList.add(student);
+        }
+        //Note the sql insert should be in '' not ""
+        assertEquals(6, collegeStudentList.size(), "the expected number of students");
+
+    }
+//simulate
 
 }
