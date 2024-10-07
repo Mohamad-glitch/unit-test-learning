@@ -154,7 +154,23 @@ public class GradebookControllerTest {
 
     }
 
+    @DisplayName("Error page")
+    @Test
+    public void deleteStudentHttpRequestErrorPage() throws Exception {
+        // this method is about to get an error page if there is anything wrong
+        // in this case i am calling for data id = 0 (that does not exist)
+        // so it will create an error and in this case it should get an error page
 
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/delete/student/{id}", 0)).
+                andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+
+    }
 
 
 }

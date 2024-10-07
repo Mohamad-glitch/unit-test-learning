@@ -50,6 +50,9 @@ public class GradebookController {
 
     @GetMapping("/delete/student/{id}")
     public String deleteStudent(@PathVariable int id, Model m) {
+        if(id <= 0 ){
+            return "error";// cant use "redirect:/error" because it will return redirect status (300~399)
+        }
 
         studentService.deleteStudent(id);
         Iterable<CollegeStudent> students = studentService.getGradeBook();
