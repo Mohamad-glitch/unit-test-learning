@@ -10,11 +10,16 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class GradebookController {
 
-    @Autowired
-    private Gradebook gradebook;
+    private final Gradebook gradebook;
+
+    private final StudentAndGradeService studentService;
 
     @Autowired
-    private StudentAndGradeService studentService;
+    public GradebookController(Gradebook gradebook, StudentAndGradeService studentService) {
+        this.gradebook = gradebook;
+        this.studentService = studentService;
+    }
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getStudents(Model m) {
@@ -27,7 +32,13 @@ public class GradebookController {
     @PostMapping("/")
     public String addStudent(@ModelAttribute("student") CollegeStudent student, Model m) {
         // this will save model student to database
-        studentService.createStudent(student.getFirstname(),student.getLastname(),student.getEmailAddress());
+        studentService.createStudent(student.getFirstname(),
+                student.getLastname(),student.getEmailAddress());
+
+        Iterable<CollegeStudent> students = studentService.getGradeBook();
+        m.addAttribute("students", students);
+
+
         return "index";
     }
 

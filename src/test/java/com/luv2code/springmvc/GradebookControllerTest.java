@@ -107,6 +107,17 @@ public class GradebookControllerTest {
 
     @Test
     public void createStudentHttpRequest() throws Exception {
+        CollegeStudent collegeStudentOne = new CollegeStudent("Mohamad"
+                ,"Shlool","shlool@gmail.com");
+
+        List<CollegeStudent> students = new ArrayList<>(Arrays.asList(collegeStudentOne));
+
+        // mocking studentService.getGradeBook()
+        when(studentService.getGradeBook()).thenReturn(students);
+
+        // just to check if it works
+        assertIterableEquals(students, studentService.getGradeBook(),"this should have the same values");
+
         // create a student using http request
         // post data to mapping in controller (create a new mapping in controller type POST)
 
