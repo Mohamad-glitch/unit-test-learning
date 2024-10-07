@@ -3,10 +3,7 @@ package com.luv2code.springmvc;
 import com.luv2code.springmvc.models.CollegeStudent;
 import com.luv2code.springmvc.repository.StudentDAO;
 import com.luv2code.springmvc.service.StudentAndGradeService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +24,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -137,6 +135,24 @@ public class GradebookControllerTest {
         assertNotNull(verifyStudent, "it should has the student that cam from http request");
     }
 
+
+    @DisplayName("delete student")
+    @Test
+    public void deleteStudentHttpRequest() throws Exception {
+        // check if student exist
+        assertTrue(studentDAO.findById(1).isPresent());
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders// this to preform a web request
+                .get("/delete/student/{id}", 1))// 1 is for id as input
+                .andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "index");
+
+        assertFalse(studentDAO.findById(1).isPresent());
+
+    }
 
 
 
