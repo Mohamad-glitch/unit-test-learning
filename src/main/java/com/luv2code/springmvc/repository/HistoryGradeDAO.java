@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HistoryGradeDAO extends JpaRepository<HistoryGrade, Integer> {
 
-    Iterable<HistoryGrade> findScienceGradeById(Integer id);
+    Iterable<HistoryGrade> findGradeByStudentId(Integer id);
 
 }
 

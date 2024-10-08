@@ -23,31 +23,36 @@ public class StudentAndGradeService {
 
     private final MathGradeDAO mathGradeDAO;
 
-    @Autowired
+    private final ScienceGradeDAO scienceGradeDAO;
+
+    private final HistoryGradeDAO historyDAO;
+
+
     @Qualifier("mathGrades")
     private MathGrade mathGrade;
 
-    @Autowired
+
     @Qualifier("historyGrades")
     private HistoryGrade historyGrade;
 
-    @Autowired
+
     @Qualifier("scienceGrades")
     private ScienceGrade scienceGrade;
 
-    @Autowired
-    private ScienceGradeDAO scienceGradeDAO;
 
-    @Autowired
-    private HistoryGradeDAO historyDAO;
 
 
     @Autowired
-    public StudentAndGradeService(StudentDAO studentDAO, MathGradeDAO mathGradeDAO) {
+    public StudentAndGradeService(StudentDAO studentDAO, MathGradeDAO mathGradeDAO,
+                                  MathGrade mathGrade, HistoryGrade historyGrade, ScienceGrade scienceGrade, ScienceGradeDAO scienceGradeDAO, HistoryGradeDAO historyDAO) {
         this.studentDAO = studentDAO;
         this.mathGradeDAO = mathGradeDAO;
+        this.mathGrade = mathGrade;
+        this.historyGrade = historyGrade;
+        this.scienceGrade = scienceGrade;
+        this.scienceGradeDAO = scienceGradeDAO;
+        this.historyDAO = historyDAO;
     }
-
 
     public void createStudent(String firstName, String lastName, String email) {
         CollegeStudent student = new CollegeStudent(firstName, lastName, email);
@@ -78,29 +83,28 @@ public class StudentAndGradeService {
             return false;
         }
 
+
         if(grade <= 100.00 && grade >= 0.00){
-            if(type.equals("math")){
+            if(type.equalsIgnoreCase("math")){
                 mathGrade.setId(0);
                 mathGrade.setGrade(grade);
                 mathGrade.setStudentId(id);
                 mathGradeDAO.save(mathGrade);
                 return true;
             }
-        }
 
-        if(grade <= 100.00 && grade >= 0.00){
-            if(type.equals("science")){
+
+            if(type.equalsIgnoreCase("science")){
                 scienceGrade.setId(0);
                 scienceGrade.setGrade(grade);
                 scienceGrade.setStudentId(id);
                 scienceGradeDAO.save(scienceGrade);
                 return true;
             }
-        }
 
 
-        if(grade <= 100.00 && grade >= 0.00){
-            if(type.equals("history")){
+
+            if(type.equalsIgnoreCase("history")){
                 historyGrade.setId(0);
                 historyGrade.setGrade(grade);
                 historyGrade.setStudentId(id);

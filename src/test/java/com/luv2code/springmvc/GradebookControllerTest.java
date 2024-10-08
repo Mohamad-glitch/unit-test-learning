@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -85,11 +86,21 @@ public class GradebookControllerTest {
         jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address)"+
                 "values (1, 'Mohamad', 'Altalib', 'whatever@gamil.com')");
 
+
+        jdbc.execute("insert into math_grade(id, student_id, grade) values (1, 1, 100.00)");
+        jdbc.execute("insert into science_grade(id, student_id, grade) values (1, 1, 100.00)");
+        jdbc.execute("insert into history_grade(id, student_id, grade) values (1, 1, 100.00)");
+
+
     }
 
     @AfterEach
     public void afterEach() {
         jdbc.execute("DELETE FROM student");// this to free the RAM from data
+        jdbc.execute("DELETE FROM math_grade");
+        jdbc.execute("DELETE FROM science_grade");
+        jdbc.execute("DELETE FROM history_grade");
+
     }
 
     @Test
@@ -211,7 +222,7 @@ public class GradebookControllerTest {
         assertTrue(studentAndGradeService.createGrade(80.50, 1, "science"));
 
         // get all grades with student id
-        Iterable<ScienceGrade> grades = scienceDAO.findScienceGradeById(1);
+        Iterable<ScienceGrade> grades = scienceDAO.findGradeByStudentId(1);
 
         // verify
         assertTrue(grades.iterator().hasNext(), "science has grades");
@@ -225,10 +236,58 @@ public class GradebookControllerTest {
         assertTrue(studentAndGradeService.createGrade(80.50, 1, "history"));
 
         // get all grades with student id
-        Iterable<HistoryGrade> grades = historyDAO.findScienceGradeById(1);
+        Iterable<HistoryGrade> grades = historyDAO.findGradeByStudentId(1);
 
         // verify
         assertTrue(grades.iterator().hasNext(), "science has history");
+
+    }
+
+    @DisplayName("false input ")
+    @Test
+    public void falseInput(){
+
+        assertFalse(studentService.createGrade(80.6, 10, "math"));// out of range
+        assertFalse(studentService.createGrade(1000, 10, "math"));// student does't exist
+        assertFalse(studentService.createGrade(-15, 10, "math"));// out of range
+
+        assertFalse(studentService.createGrade(80.6, 10, "science"));// out of range
+        assertFalse(studentService.createGrade(1000, 10, "science"));// student does't exist
+        assertFalse(studentService.createGrade(-15, 10, "science"));// out of range
+
+        assertFalse(studentService.createGrade(80.6, 10, "history"));// out of range
+        assertFalse(studentService.createGrade(1000, 10, "history"));// student does't exist
+        assertFalse(studentService.createGrade(-15, 10, "history"));// out of range
+
+        assertFalse(studentService.createGrade(-15, 10, "english"));// there is no subject called english
+
+    }
+
+    @DisplayName("all of grades")
+    @Test
+    public void allGrades(){
+        // create the grade
+        assertTrue(studentAndGradeService.createGrade(80.50, 1, "math"));// grade, Id, Type
+        assertTrue(studentAndGradeService.createGrade(80.50, 1, "history"));
+        assertTrue(studentAndGradeService.createGrade(80.50, 1, "science"));
+
+
+        // get all grades with studentId
+        Iterable<MathGrade> grades = mathGradeDAO.findGradeByStudentId(1);
+        Iterable<HistoryGrade> gradeHistory = historyDAO.findGradeByStudentId(1);
+        Iterable<ScienceGrade> gradeScience = scienceDAO.findGradeByStudentId(1);
+
+
+        // verify there is grades
+        assertTrue(grades.iterator().hasNext(), "student has math grades");
+        assertTrue(gradeHistory.iterator().hasNext(), "science has history");
+        assertTrue(gradeScience.iterator().hasNext(), "science has grades");
+
+        // check how many gardes there
+        assertEquals(2, ((Collection<MathGrade>) grades).size());
+        assertEquals(2, ((Collection<ScienceGrade>) gradeScience).size());
+        assertEquals(2, ((Collection<HistoryGrade>) gradeHistory).size());
+
 
     }
 
