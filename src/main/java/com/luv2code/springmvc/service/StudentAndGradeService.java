@@ -1,8 +1,12 @@
 package com.luv2code.springmvc.service;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.HistoryGrade;
 import com.luv2code.springmvc.models.MathGrade;
+import com.luv2code.springmvc.models.ScienceGrade;
+import com.luv2code.springmvc.repository.HistoryGradeDAO;
 import com.luv2code.springmvc.repository.MathGradeDAO;
+import com.luv2code.springmvc.repository.ScienceGradeDAO;
 import com.luv2code.springmvc.repository.StudentDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +27,19 @@ public class StudentAndGradeService {
     @Qualifier("mathGrades")
     private MathGrade mathGrade;
 
+    @Autowired
+    @Qualifier("historyGrades")
+    private HistoryGrade historyGrade;
+
+    @Autowired
+    @Qualifier("scienceGrades")
+    private ScienceGrade scienceGrade;
+
+    @Autowired
+    private ScienceGradeDAO scienceGradeDAO;
+
+    @Autowired
+    private HistoryGradeDAO historyDAO;
 
 
     @Autowired
@@ -71,7 +88,29 @@ public class StudentAndGradeService {
             }
         }
 
-        return true;
+        if(grade <= 100.00 && grade >= 0.00){
+            if(type.equals("science")){
+                scienceGrade.setId(0);
+                scienceGrade.setGrade(grade);
+                scienceGrade.setStudentId(id);
+                scienceGradeDAO.save(scienceGrade);
+                return true;
+            }
+        }
+
+
+        if(grade <= 100.00 && grade >= 0.00){
+            if(type.equals("history")){
+                historyGrade.setId(0);
+                historyGrade.setGrade(grade);
+                historyGrade.setStudentId(id);
+                historyDAO.save(historyGrade);
+                return true;
+            }
+        }
+
+
+        return false;
     }
 
 }

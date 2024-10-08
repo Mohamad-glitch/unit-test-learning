@@ -1,8 +1,12 @@
 package com.luv2code.springmvc;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.HistoryGrade;
 import com.luv2code.springmvc.models.MathGrade;
+import com.luv2code.springmvc.models.ScienceGrade;
+import com.luv2code.springmvc.repository.HistoryGradeDAO;
 import com.luv2code.springmvc.repository.MathGradeDAO;
+import com.luv2code.springmvc.repository.ScienceGradeDAO;
 import com.luv2code.springmvc.repository.StudentDAO;
 import com.luv2code.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
@@ -43,6 +47,12 @@ public class GradebookControllerTest {
 
     @Autowired
     private MathGradeDAO mathGradeDAO;
+
+    @Autowired
+    private HistoryGradeDAO historyDAO;
+
+    @Autowired
+    private ScienceGradeDAO scienceDAO;
 
     @Autowired
     private MockMvc mockMvc;
@@ -179,7 +189,7 @@ public class GradebookControllerTest {
 
     }
 
-
+    @DisplayName("create a math grade ")
     @Test
     public void createGradeBookService(){
 
@@ -191,6 +201,34 @@ public class GradebookControllerTest {
 
         // verify there is grades
         assertTrue(grades.iterator().hasNext(), "student has math grades");
+
+    }
+
+    @DisplayName("create a science grade")
+    @Test
+    public void cratesScienceGrade(){
+        // create science grade
+        assertTrue(studentAndGradeService.createGrade(80.50, 1, "science"));
+
+        // get all grades with student id
+        Iterable<ScienceGrade> grades = scienceDAO.findScienceGradeById(1);
+
+        // verify
+        assertTrue(grades.iterator().hasNext(), "science has grades");
+
+    }
+
+    @DisplayName("create a History grade")
+    @Test
+    public void cratesHistoryGrade(){
+        // create science grade
+        assertTrue(studentAndGradeService.createGrade(80.50, 1, "history"));
+
+        // get all grades with student id
+        Iterable<HistoryGrade> grades = historyDAO.findScienceGradeById(1);
+
+        // verify
+        assertTrue(grades.iterator().hasNext(), "science has history");
 
     }
 
