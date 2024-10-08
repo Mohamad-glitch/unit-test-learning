@@ -1,6 +1,8 @@
 package com.luv2code.springmvc;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.MathGrade;
+import com.luv2code.springmvc.repository.MathGradeDAO;
 import com.luv2code.springmvc.repository.StudentDAO;
 import com.luv2code.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
@@ -24,7 +26,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,10 +42,16 @@ public class GradebookControllerTest {
     //(there is no need to be static unless it used in a static method)
 
     @Autowired
+    private MathGradeDAO mathGradeDAO;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private JdbcTemplate jdbc;
+
+    @Autowired
+    private StudentAndGradeService studentAndGradeService;
 
     @Mock
     private StudentAndGradeService studentService;
@@ -169,6 +176,21 @@ public class GradebookControllerTest {
 
 
         ModelAndViewAssert.assertViewName(mav, "error");
+
+    }
+
+
+    @Test
+    public void createGradeBookService(){
+
+        // create the grade
+        assertTrue(studentAndGradeService.createGrade(80.50, 1, "math"));// grade, Id, Type
+
+        // get all grades with studentId
+        Iterable<MathGrade> grades = mathGradeDAO.findGradeByStudentId(1);
+
+        // verify there is grades
+        assertTrue(grades.iterator().hasNext(), "student has math grades");
 
     }
 

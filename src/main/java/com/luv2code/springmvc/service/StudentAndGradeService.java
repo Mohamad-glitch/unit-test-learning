@@ -1,8 +1,11 @@
 package com.luv2code.springmvc.service;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.MathGrade;
+import com.luv2code.springmvc.repository.MathGradeDAO;
 import com.luv2code.springmvc.repository.StudentDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,9 +17,18 @@ public class StudentAndGradeService {
 
     private final StudentDAO studentDAO;
 
+    private final MathGradeDAO mathGradeDAO;
+
     @Autowired
-    public StudentAndGradeService(StudentDAO studentDAO) {
+    @Qualifier("mathGrades")
+    private MathGrade mathGrade;
+
+
+
+    @Autowired
+    public StudentAndGradeService(StudentDAO studentDAO, MathGradeDAO mathGradeDAO) {
         this.studentDAO = studentDAO;
+        this.mathGradeDAO = mathGradeDAO;
     }
 
 
@@ -41,4 +53,25 @@ public class StudentAndGradeService {
     public Iterable<CollegeStudent> getGradeBook() {
         return studentDAO.findAll();
     }
+
+    public boolean createGrade(double grade, int id, String type){
+
+        if(checkIfStudentIsNull(id)){
+
+            return false;
+        }
+
+        if(grade <= 100.00 && grade >= 0.00){
+            if(type.equals("math")){
+                mathGrade.setId(0);
+                mathGrade.setGrade(grade);
+                mathGrade.setStudentId(id);
+                mathGradeDAO.save(mathGrade);
+                return true;
+            }
+        }
+
+        return true;
+    }
+
 }
