@@ -1,9 +1,6 @@
 package com.luv2code.springmvc;
 
-import com.luv2code.springmvc.models.CollegeStudent;
-import com.luv2code.springmvc.models.HistoryGrade;
-import com.luv2code.springmvc.models.MathGrade;
-import com.luv2code.springmvc.models.ScienceGrade;
+import com.luv2code.springmvc.models.*;
 import com.luv2code.springmvc.repository.HistoryGradeDAO;
 import com.luv2code.springmvc.repository.MathGradeDAO;
 import com.luv2code.springmvc.repository.ScienceGradeDAO;
@@ -14,7 +11,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.DomainEvents;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -318,6 +314,33 @@ public class GradebookControllerTest {
 
         assertEquals(0, studentAndGradeService.deleteGrade(0, "whatever"),
                 "there is no subject called whatever");
+
+    }
+
+    @DisplayName("assert student info")
+    @Test
+    public void studentInformation(){
+
+        GradebookCollegeStudent gradebookCollegeStudent = studentAndGradeService.studentInformation(1);
+
+        assertNotNull(gradebookCollegeStudent, "this should not be null");
+        assertEquals(1, gradebookCollegeStudent.getId());
+        assertEquals("Mohamad", gradebookCollegeStudent.getFirstname());
+        assertEquals("Altalib", gradebookCollegeStudent.getLastname());
+        assertEquals("whatever@gamil.com", gradebookCollegeStudent.getEmailAddress());
+        assertTrue(gradebookCollegeStudent.getStudentGrades().getMathGradeResults().size() == 1);
+        assertTrue(gradebookCollegeStudent.getStudentGrades().getHistoryGradeResults().size() == 1);
+        assertTrue(gradebookCollegeStudent.getStudentGrades().getScienceGradeResults().size() == 1);
+
+    }
+
+    @DisplayName("test if the student id isn't exist")
+    @Test
+    public void studentInformationServiceReturnNull(){
+        // if the student isn't exist return null (edge case)
+    GradebookCollegeStudent gradebookCollegeStudent = studentAndGradeService.studentInformation(0);// this id does not exist
+        assertNull(gradebookCollegeStudent, "this should not be null");
+
 
     }
 
