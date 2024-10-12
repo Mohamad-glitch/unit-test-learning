@@ -11,6 +11,7 @@ import com.luv2code.springmvc.repository.StudentDAO;
 import com.luv2code.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
@@ -43,25 +44,53 @@ public class StudentAndGradeServiceTest {
     private ScienceGradeDAO scienceGradeDAO;
     // because the temporary data stored in RAM
 
+    // added a sql scripts in properties and inject them in variables (cleaner way to do sql in test)
+    @Value("${sql.scripts.create.student}")
+    private String sqlScriptCreateStudent;
+
+    @Value("${sql.scripts.create.math.grade}")
+    private String sqlScriptCreateMathGrade;
+
+    @Value("${sql.scripts.create.history.grade}")
+    private String sqlScriptCreateHistoryGrade;
+
+    @Value("${sql.scripts.create.science.grade}")
+    private String sqlScriptCreateScienceGrade;
+
+    @Value("${sql.script.delete.student}")
+    private String sqlScriptDeleteStudent;
+
+
+    @Value("${sql.script.delete.math}")
+    private String sqlScriptDeleteMath;
+
+    @Value("${sql.script.delete.science}")
+    private String sqlScriptDeleteScienceGrade;
+
+    @Value("${sql.script.delete.history}")
+    private String sqlScriptDeleteHistory;
+
+
 
     @BeforeEach
-    public void setUp() {
-        jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address)"+
-                "values (1, 'Mohamad', 'Altalib', 'whatever@gamil.com')");
+    public void beforeEach() {
+        jdbc.execute(sqlScriptCreateStudent);
 
-        // added some data to play with
-        jdbc.execute("insert into math_grade(id, student_id, grade) values (1, 1, 100.00)");
-        jdbc.execute("insert into science_grade(id, student_id, grade) values (1, 1, 100.00)");
-        jdbc.execute("insert into history_grade(id, student_id, grade) values (1, 1, 100.00)");
+
+        jdbc.execute(sqlScriptCreateMathGrade);
+        jdbc.execute(sqlScriptCreateHistoryGrade);
+        jdbc.execute(sqlScriptCreateScienceGrade);
+
 
     }
 
     @AfterEach
-    public void tearDown() {
-        jdbc.execute("DELETE FROM student");// this to free the RAM from data
-        jdbc.execute("DELETE FROM math_grade");
-        jdbc.execute("DELETE FROM science_grade");
-        jdbc.execute("DELETE FROM history_grade");
+    public void afterEach() {
+        jdbc.execute(sqlScriptDeleteStudent);// this to free the RAM from data
+        jdbc.execute(sqlScriptDeleteMath);
+        jdbc.execute(sqlScriptDeleteScienceGrade);
+        jdbc.execute(sqlScriptDeleteHistory);
+
     }
 
 
