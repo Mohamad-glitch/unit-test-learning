@@ -117,4 +117,44 @@ public class StudentAndGradeService {
         return false;
     }
 
+
+    public int deleteGrade(int id, String type){
+        int studentId = 0;
+
+        if(type.equals("math")) {
+
+            Optional<MathGrade> grade = mathGradeDAO.findById(id); // get the grade with id
+            if (grade.isPresent()) {
+                studentId = grade.get().getStudentId(); // get the student id
+                mathGradeDAO.deleteById(id); // delete the grade
+            } else {
+                return 0; // return 0 if the grade is not present
+            }
+        }
+
+        if(type.equals("history")) {
+
+            Optional<HistoryGrade> grade = historyDAO.findById(id); // get the grade with id
+            if (grade.isPresent()) {
+                studentId = grade.get().getStudentId(); // get the student id
+                historyDAO.deleteById(id); // delete the grade
+            } else {
+                return 0; // return 0 if the grade is not present
+            }
+        }
+
+        if(type.equals("science")) {
+
+            Optional<ScienceGrade> grade = scienceGradeDAO.findById(id); // get the grade with id
+            if (grade.isPresent()) {
+                studentId = grade.get().getStudentId(); // get the student id
+                scienceGradeDAO.deleteById(id); // delete the grade
+            } else {
+                return 0; // return 0 if the grade is not present
+            }
+        }
+
+        return studentId;
+    }
+
 }

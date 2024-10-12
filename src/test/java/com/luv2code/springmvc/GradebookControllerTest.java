@@ -65,7 +65,7 @@ public class GradebookControllerTest {
     private StudentAndGradeService studentAndGradeService;
 
     @Mock
-    private StudentAndGradeService studentService;
+    private StudentAndGradeService studentServiceMock;
 
     @Autowired
     private StudentDAO studentDAO;
@@ -113,10 +113,10 @@ public class GradebookControllerTest {
 
         List<CollegeStudent> students = new ArrayList<>(Arrays.asList(studentOne, studentTwo));
 
-        when(studentService.getGradeBook()).thenReturn(students);
+        when(studentServiceMock.getGradeBook()).thenReturn(students);
 
         // just to check if they have the same values
-        assertIterableEquals(students, studentService.getGradeBook(),"this should have the same values");
+        assertIterableEquals(students, studentServiceMock.getGradeBook(),"this should have the same values");
 
 
         // now we will do some web testing (MVC)
@@ -138,11 +138,11 @@ public class GradebookControllerTest {
 
         List<CollegeStudent> students = new ArrayList<>(Arrays.asList(collegeStudentOne));
 
-        // mocking studentService.getGradeBook()
-        when(studentService.getGradeBook()).thenReturn(students);
+        // mocking studentServiceMock.getGradeBook()
+        when(studentServiceMock.getGradeBook()).thenReturn(students);
 
         // just to check if it works
-        assertIterableEquals(students, studentService.getGradeBook(),"this should have the same values");
+        assertIterableEquals(students, studentServiceMock.getGradeBook(),"this should have the same values");
 
         // create a student using http request
         // post data to mapping in controller (create a new mapping in controller type POST)
@@ -247,19 +247,19 @@ public class GradebookControllerTest {
     @Test
     public void falseInput(){
 
-        assertFalse(studentService.createGrade(80.6, 10, "math"));// out of range
-        assertFalse(studentService.createGrade(1000, 10, "math"));// student does't exist
-        assertFalse(studentService.createGrade(-15, 10, "math"));// out of range
+        assertFalse(studentServiceMock.createGrade(80.6, 10, "math"));// out of range
+        assertFalse(studentServiceMock.createGrade(1000, 10, "math"));// student does't exist
+        assertFalse(studentServiceMock.createGrade(-15, 10, "math"));// out of range
 
-        assertFalse(studentService.createGrade(80.6, 10, "science"));// out of range
-        assertFalse(studentService.createGrade(1000, 10, "science"));// student does't exist
-        assertFalse(studentService.createGrade(-15, 10, "science"));// out of range
+        assertFalse(studentServiceMock.createGrade(80.6, 10, "science"));// out of range
+        assertFalse(studentServiceMock.createGrade(1000, 10, "science"));// student does't exist
+        assertFalse(studentServiceMock.createGrade(-15, 10, "science"));// out of range
 
-        assertFalse(studentService.createGrade(80.6, 10, "history"));// out of range
-        assertFalse(studentService.createGrade(1000, 10, "history"));// student does't exist
-        assertFalse(studentService.createGrade(-15, 10, "history"));// out of range
+        assertFalse(studentServiceMock.createGrade(80.6, 10, "history"));// out of range
+        assertFalse(studentServiceMock.createGrade(1000, 10, "history"));// student does't exist
+        assertFalse(studentServiceMock.createGrade(-15, 10, "history"));// out of range
 
-        assertFalse(studentService.createGrade(-15, 10, "english"));// there is no subject called english
+        assertFalse(studentServiceMock.createGrade(-15, 10, "english"));// there is no subject called english
 
     }
 
@@ -288,6 +288,22 @@ public class GradebookControllerTest {
         assertEquals(2, ((Collection<ScienceGrade>) gradeScience).size());
         assertEquals(2, ((Collection<HistoryGrade>) gradeHistory).size());
 
+
+    }
+
+    @DisplayName("Deleting grades from student")
+    @Test
+    public void deleteGradeService(){
+        // add delete grade functionality to the system
+        assertEquals(1, studentAndGradeService.deleteGrade(1, "math")// 1 = id, "math" = grade type or class
+               , "Returns student id after the delete");
+
+
+        assertEquals(1, studentAndGradeService.deleteGrade(1, "history")// 1 = id, "history" = grade type or class
+                , "Returns student id after the delete");
+
+        assertEquals(1, studentAndGradeService.deleteGrade(1, "science")// 1 = id, "science" = grade type or class
+                , "Returns student id after the delete");
 
     }
 
