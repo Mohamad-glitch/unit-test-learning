@@ -7,5 +7,7 @@ public interface HistoryGradeDAO extends JpaRepository<HistoryGrade, Integer> {
 
     Iterable<HistoryGrade> findGradeByStudentId(Integer id);
 
+    void deleteByStudentId(int id);
+
 }
 

@@ -1,12 +1,15 @@
 package com.luv2code.springmvc;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.HistoryGrade;
+import com.luv2code.springmvc.models.MathGrade;
+import com.luv2code.springmvc.models.ScienceGrade;
+import com.luv2code.springmvc.repository.HistoryGradeDAO;
+import com.luv2code.springmvc.repository.MathGradeDAO;
+import com.luv2code.springmvc.repository.ScienceGradeDAO;
 import com.luv2code.springmvc.repository.StudentDAO;
 import com.luv2code.springmvc.service.StudentAndGradeService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,6 +35,12 @@ public class StudentAndGradeServiceTest {
 
     @Autowired
     private JdbcTemplate jdbc; // the jdbc is a helper for spring like u don't need to connect to database and it is faster
+    @Autowired
+    private MathGradeDAO mathGradeDAO;
+    @Autowired
+    private HistoryGradeDAO historyGradeDAO;
+    @Autowired
+    private ScienceGradeDAO scienceGradeDAO;
     // because the temporary data stored in RAM
 
 
@@ -40,11 +49,19 @@ public class StudentAndGradeServiceTest {
         jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address)"+
                 "values (1, 'Mohamad', 'Altalib', 'whatever@gamil.com')");
 
+        // added some data to play with
+        jdbc.execute("insert into math_grade(id, student_id, grade) values (1, 1, 100.00)");
+        jdbc.execute("insert into science_grade(id, student_id, grade) values (1, 1, 100.00)");
+        jdbc.execute("insert into history_grade(id, student_id, grade) values (1, 1, 100.00)");
+
     }
 
     @AfterEach
     public void tearDown() {
         jdbc.execute("DELETE FROM student");// this to free the RAM from data
+        jdbc.execute("DELETE FROM math_grade");
+        jdbc.execute("DELETE FROM science_grade");
+        jdbc.execute("DELETE FROM history_grade");
     }
 
 
@@ -85,16 +102,32 @@ public class StudentAndGradeServiceTest {
 
     @DisplayName("delete student from database")
     @Test
-    public void deleteStudentFromDatabase(){
+    public void deleteStudentFromDatabase(){// academic code
+        // add code to delete associated grades
         Optional<CollegeStudent> student = studentDAO.findById(1);
+        Optional<MathGrade> mathGrade = mathGradeDAO.findById(1);
+        Optional<HistoryGrade> historyGrade = historyGradeDAO.findById(1);
+        Optional<ScienceGrade> scienceGrade = scienceGradeDAO.findById(1);
+
 
         assertTrue(student.isPresent(), "return true");
+        assertTrue(mathGrade.isPresent(), "return true");
+        assertTrue(historyGrade.isPresent(), "return true");
+        assertTrue(scienceGrade.isPresent(), "return true");
 
         studentService.deleteStudent(1);
 
-        Optional<CollegeStudent> student2 = studentDAO.findById(1);
+        mathGrade = mathGradeDAO.findById(1);
+        historyGrade = historyGradeDAO.findById(1);
+        scienceGrade = scienceGradeDAO.findById(1);
 
-        assertFalse(student2.isPresent(), "return false");
+        student = studentDAO.findById(1);
+
+        assertFalse(student.isPresent(), "return false");
+        assertFalse(historyGrade.isPresent(), "return false");
+        assertFalse(mathGrade.isPresent(), "return false");
+        assertFalse(scienceGrade.isPresent(), "return false");
+
 
     }
 

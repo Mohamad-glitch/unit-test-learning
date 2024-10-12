@@ -7,4 +7,6 @@ public interface ScienceGradeDAO extends JpaRepository<ScienceGrade, Integer> {
 
     Iterable<ScienceGrade> findGradeByStudentId(Integer id);
 
+    void deleteByStudentId(int id);
+
 }

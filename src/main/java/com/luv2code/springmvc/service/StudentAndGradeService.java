@@ -27,6 +27,8 @@ public class StudentAndGradeService {
 
     private final HistoryGradeDAO historyDAO;
 
+    private final HistoryGradeDAO historyGradeDAO;
+
 
     @Qualifier("mathGrades")
     private MathGrade mathGrade;
@@ -44,7 +46,7 @@ public class StudentAndGradeService {
 
     @Autowired
     public StudentAndGradeService(StudentDAO studentDAO, MathGradeDAO mathGradeDAO,
-                                  MathGrade mathGrade, HistoryGrade historyGrade, ScienceGrade scienceGrade, ScienceGradeDAO scienceGradeDAO, HistoryGradeDAO historyDAO) {
+                                  MathGrade mathGrade, HistoryGrade historyGrade, ScienceGrade scienceGrade, ScienceGradeDAO scienceGradeDAO, HistoryGradeDAO historyDAO, HistoryGradeDAO historyGradeDAO) {
         this.studentDAO = studentDAO;
         this.mathGradeDAO = mathGradeDAO;
         this.mathGrade = mathGrade;
@@ -52,6 +54,7 @@ public class StudentAndGradeService {
         this.scienceGrade = scienceGrade;
         this.scienceGradeDAO = scienceGradeDAO;
         this.historyDAO = historyDAO;
+        this.historyGradeDAO = historyGradeDAO;
     }
 
     public void createStudent(String firstName, String lastName, String email) {
@@ -68,8 +71,14 @@ public class StudentAndGradeService {
         return student.isEmpty();
     }
 
-    public void deleteStudent(int i) {
-        studentDAO.deleteById(i);
+    public void deleteStudent(int id) {
+        if(!(checkIfStudentIsNull(id))) {
+            studentDAO.deleteById(id);
+            mathGradeDAO.deleteByStudentId(id);
+            historyGradeDAO.deleteByStudentId(id);
+            scienceGradeDAO.deleteByStudentId(id);
+    }
+
     }
 
     public Iterable<CollegeStudent> getGradeBook() {
