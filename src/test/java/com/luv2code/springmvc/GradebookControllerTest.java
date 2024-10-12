@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.DomainEvents;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -304,6 +305,19 @@ public class GradebookControllerTest {
 
         assertEquals(1, studentAndGradeService.deleteGrade(1, "science")// 1 = id, "science" = grade type or class
                 , "Returns student id after the delete");
+
+    }
+
+    @DisplayName("delete with non-extent student id")
+    @Test
+    public void deleteGradeServiceReturnStudentIdOfZero(){
+        // edge cases
+
+        assertEquals(0, studentAndGradeService.deleteGrade(0, "math")
+                ,"No student should have 0 id ");
+
+        assertEquals(0, studentAndGradeService.deleteGrade(0, "whatever"),
+                "there is no subject called whatever");
 
     }
 
