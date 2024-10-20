@@ -427,5 +427,42 @@ public class GradebookControllerTest {
         assertEquals(2, student.getStudentGrades().getMathGradeResults().size());
     }
 
+    @DisplayName("creat a valid grade if the student does not exist")
+    @Test
+    public void createAValidGradeHttpRequestStudentDoesNotExistEmptyResponse() throws Exception{
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .post("/grades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("grade", "85.00")
+                .param("gradeType", "history")
+                .param("studentId", "0")// id = 0 does not exist
+
+        ).andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+
+    }
+
+    @DisplayName("test for invalid subject")
+    @Test
+    public void createANonValidGradeHttpRequestGradeTypeDoesNotExistEmptyResponse() throws Exception{
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .post("/grades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("grade", "85.00")
+                .param("gradeType", "whatever")
+                .param("studentId", "1")
+        ).andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+        
+    }
+
 
 }
