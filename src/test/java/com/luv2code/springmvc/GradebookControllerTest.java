@@ -402,5 +402,30 @@ public class GradebookControllerTest {
 
     }
 
+    @DisplayName("create a new grade")
+    @Test
+    public void createValidGradeHttpRequest() throws Exception{
+
+        assertTrue(studentDAO.findById(1).isPresent());
+
+        GradebookCollegeStudent student = studentAndGradeService.studentInformation(1);
+
+        assertEquals(1, student.getStudentGrades().getMathGradeResults().size());
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders// when we are using perform()
+            .post("/grades").contentType(MediaType.APPLICATION_JSON)//it may throw an Exception
+            .param("grade", "85.00")
+            .param("gradeType", "math")
+            .param("studentId", "1")
+        ).andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "studentInformation");
+
+        student = studentAndGradeService.studentInformation(1);
+
+        assertEquals(2, student.getStudentGrades().getMathGradeResults().size());
+    }
+
 
 }
