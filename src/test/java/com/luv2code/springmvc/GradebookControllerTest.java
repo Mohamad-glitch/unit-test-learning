@@ -22,10 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -462,6 +459,45 @@ public class GradebookControllerTest {
 
         ModelAndViewAssert.assertViewName(mav, "error");
         
+    }
+
+    @Test
+    public void deleteAValidGradeHttpRequest() throws Exception{
+
+        Optional<MathGrade> mathGrade = mathGradeDAO.findById(1);
+
+        assertTrue(mathGrade.isPresent());
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/grades/{id}/{gradeType}", 1, "math")
+        ).andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "studentInformation");
+
+        mathGrade = mathGradeDAO.findById(1);
+
+        assertFalse(mathGrade.isPresent());
+
+    }
+
+    @Test
+    public void deleteInvalidGradeHttpRequestStudentIdDoesNotExistEmptyResponse() throws Exception{
+
+        Optional<MathGrade> mathGrade = mathGradeDAO.findById(2);
+
+        assertFalse(mathGrade.isPresent());
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/grades/{id}/{gradeType}", 2, "math")
+        ).andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+
+
     }
 
 
