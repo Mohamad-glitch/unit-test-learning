@@ -500,5 +500,19 @@ public class GradebookControllerTest {
 
     }
 
+    @Test
+    public void deleteAnEdgeCase() throws Exception{
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/grades/{id}/{gradeType}", 1, "whatever")
+        ).andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+
+
+    }
+
 
 }
