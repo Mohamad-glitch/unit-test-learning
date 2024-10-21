@@ -202,39 +202,40 @@ public class StudentAndGradeService {
 
 
     public void configureStudentInformationModel(int id, Model m){
+        // fixed a bug where the model attribute name was historyGradeResults but the name in the HTML was historyAverage for the three subjects
         GradebookCollegeStudent studentEntity = studentInformation(id);
         m.addAttribute("student", studentEntity);
 
-
-        if(studentEntity.getStudentGrades().getMathGradeResults().size() > 0){
-            m.addAttribute("mathGradeResults",
+        // Math Average
+        if (studentEntity.getStudentGrades().getMathGradeResults().size() > 0) {
+            m.addAttribute("mathAverage",
                     studentEntity.getStudentGrades().findGradePointAverage(
                             studentEntity.getStudentGrades().getMathGradeResults()
                     )
             );
-        }else{
+        } else {
             m.addAttribute("mathAverage", "N/A");
         }
 
-
-        if(studentEntity.getStudentGrades().getMathGradeResults().size() > 0){
-            m.addAttribute("historyGradeResults",
+        // History Average
+        if (studentEntity.getStudentGrades().getHistoryGradeResults().size() > 0) {
+            m.addAttribute("historyAverage",
                     studentEntity.getStudentGrades().findGradePointAverage(
-                            studentEntity.getStudentGrades().getMathGradeResults()
+                            studentEntity.getStudentGrades().getHistoryGradeResults()
                     )
             );
-        }else{
+        } else {
             m.addAttribute("historyAverage", "N/A");
         }
 
-
-        if(studentEntity.getStudentGrades().getScienceGradeResults().size() > 0){
-            m.addAttribute("scienceGradeResults",
+        // Science Average
+        if (studentEntity.getStudentGrades().getScienceGradeResults().size() > 0) {
+            m.addAttribute("scienceAverage",
                     studentEntity.getStudentGrades().findGradePointAverage(
                             studentEntity.getStudentGrades().getScienceGradeResults()
                     )
             );
-        }else{
+        } else {
             m.addAttribute("scienceAverage", "N/A");
         }
 
