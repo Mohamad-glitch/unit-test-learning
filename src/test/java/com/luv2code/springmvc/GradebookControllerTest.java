@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@TestPropertySource("/application.properties")
+@TestPropertySource("/application-test.properties")
 @AutoConfigureMockMvc// this is needed when we are testing MVC
 @SpringBootTest(classes = MvcTestingExampleApplication.class)
 public class GradebookControllerTest {
